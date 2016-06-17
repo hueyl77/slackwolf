@@ -27,17 +27,21 @@ class HuntersOnly implements RoleStrategyInterface
         $num_evil = 1;
         $num_good = $num_players - $num_evil;
 
-        $num_seer = 0;
-        $num_witch = 0;
         $num_hunter = $num_good;
-
         $requiredRoles = [
-            Role::HUNTER => $num_hunter
+            Role::HUNTER => $num_hunter,
+            Role::WEREWOLF => $num_evil
         ];
 
-        $this->roleListMsg = "Required: [Werewolf, Hunters]";
-
         $rolePool = [];
+
+        for($i=0; $i<$num_evil; $i++) {
+            $rolePool[] = new Werewolf();
+        }
+
+        for($i=0; $i<$num_good; $i++) {
+            $rolePool[] = new Hunter();
+        }
 
         shuffle($rolePool);
 
@@ -46,6 +50,8 @@ class HuntersOnly implements RoleStrategyInterface
             $player->role = $rolePool[$i];
             $i++;
         }
+
+        $this->roleListMsg = "[1 Werewolf, " . $num_good . " Hunters]";
 
         return $players;
     }
