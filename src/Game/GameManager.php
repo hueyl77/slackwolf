@@ -401,12 +401,18 @@ class GameManager
 
         if ($this->optionsManager->getOptionValue(OptionName::role_seer)) {
             $msg .= ":moon: :zzz: It is the middle of the night and the village is sleeping.";
-            $msg .= " The game will begin when the Seer chooses someone.";
+            if (!$this->optionsManager->getOptionValue(OptionName::role_seer)) {
+                $msg .= " The game will begin when the Seer chooses someone.";
+            }
         }
         $this->sendMessageToChannel($game, $msg);
 
         if (!$this->optionsManager->getOptionValue(OptionName::role_seer)) {
             $this->changeGameState($game->getId(), GameState::NIGHT);
+        }
+        else {
+            $game->changeState(GameState::DAY);
+            $this->onDay($game);
         }
     }
 
